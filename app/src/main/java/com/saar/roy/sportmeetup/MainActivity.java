@@ -1,9 +1,11 @@
 package com.saar.roy.sportmeetup;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -22,8 +24,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-
-        Toast.makeText(this,"Alert",Toast.LENGTH_SHORT).show();
+        TextView usernameInput = (TextView)findViewById(R.id.usernameInput);
+        TextView passwordInput = (TextView)findViewById(R.id.passwordInput);
+        String username = usernameInput.getText().toString();
+        String password  = passwordInput.getText().toString();
+        if (backEnd.signIn(username, password)) {
+            Intent intent = new Intent(this,DashboardActivity.class);
+            startActivity(intent);
+        }
+        else
+        Toast.makeText(this,"Wrong Username/Password",Toast.LENGTH_SHORT).show();
     }
 
     class MockBackEnd implements BackEnd {
