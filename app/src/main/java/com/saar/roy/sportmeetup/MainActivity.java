@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button signInButton;
     TextView signUpButton;
     MockBackEnd backEnd;
+    Dialog signUpDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +37,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             TextView passwordInput = (TextView) findViewById(R.id.passwordInput);
             String username = usernameInput.getText().toString();
             String password = passwordInput.getText().toString();
-            if (backEnd.signIn(username, password)) {
-                Intent intent = new Intent(this, DashboardActivity.class);
-                startActivity(intent);
-            } else
-                Toast.makeText(this, "Wrong Username/Password", Toast.LENGTH_SHORT).show();
         }
         else if (v == signUpButton) {
-            Dialog signUpDialog = new Dialog(this);
+            signUpDialog = new Dialog(this);
             signUpDialog.setTitle("Sign Up");
-            signUpDialog.setContentView(R.layout.dialog_signIn);
+            signUpDialog.setContentView(R.layout.dialog_signin);
             Button submitButton = (Button)signUpDialog.findViewById(R.id.registerSubmit);
+            final Intent DASH_INTENT = new Intent(this, DashboardActivity.class);
+            submitButton.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            EditText usernameInput = (EditText) signUpDialog.findViewById(R.id.usernameInput);
+                            EditText passwordInput = (EditText) signUpDialog.findViewById(R.id.passwordInput);
+                            String username = usernameInput.getText().toString();
+                            String password = passwordInput.getText().toString();
+                            if (backEnd.signIn(username, password)) {
+                                startActivity(DASH_INTENT);
+                            }
+                            else
+                                 ;
+
+                        }
+                    }
+            );
             signUpDialog.show();
         }
     }
