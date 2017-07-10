@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "972576476474",
+    "firebase_url": "https://sportmeetup-c86f7.firebaseio.com",
+    "project_id": "sportmeetup-c86f7",
+    "storage_bucket": "sportmeetup-c86f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:972576476474:android:2ff78789e815a373",
+        "android_client_info": {
+          "package_name": "com.saar.roy.sportmeetup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "972576476474-c50jlnlrkv3rj5nni3voroaihgvcftok.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.saar.roy.sportmeetup",
+            "certificate_hash": "8fcb52347ae0e225549666dae8c3c092bd679510"
+          }
+        },
+        {
+          "client_id": "972576476474-a2jlko4ue3vrpgrqp9cp71db6an62ogt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZOjCUZwTY7lTYpSDL2fP1vHYIfUzFIVI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "972576476474-a2jlko4ue3vrpgrqp9cp71db6an62ogt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

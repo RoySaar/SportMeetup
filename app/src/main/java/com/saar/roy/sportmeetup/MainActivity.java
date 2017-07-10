@@ -1,9 +1,10 @@
 package com.saar.roy.sportmeetup;
 
 import android.app.Dialog;
-import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -11,92 +12,113 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-    Button signInButton;
-    TextView signUpButton;
+public class MainActivity extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     MockBackEnd backEnd;
-    Dialog signUpDialog;
+    public static final String LOG_AUTH_TAG = "FirebaseAuth";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(LOG_AUTH_TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(LOG_AUTH_TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
         backEnd = new MockBackEnd();
-        signInButton = (Button)findViewById(R.id.signInButton);
-        signInButton.setOnClickListener(this);
-        signUpButton = (TextView)findViewById(R.id.signInText);
-        signUpButton.setOnClickListener(this);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
     }
 
     @Override
-    public void onClick(View v) {
-        if (v == signInButton) {
-            TextView usernameInput = (TextView) findViewById(R.id.usernameInput);
-            TextView passwordInput = (TextView) findViewById(R.id.passwordInput);
-            String username = usernameInput.getText().toString();
-            String password = passwordInput.getText().toString();
+    public void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
         }
-        else if (v == signUpButton) {
-            signUpDialog = new Dialog(this);
-            signUpDialog.setTitle("Sign Up");
-            signUpDialog.setContentView(R.layout.dialog_signin);
-            Button submitButton = (Button)signUpDialog.findViewById(R.id.registerSubmit);
-            final Intent DASH_INTENT = new Intent(this, DashboardActivity.class);
-            submitButton.setOnClickListener(
-                    new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            EditText usernameInput = (EditText) signUpDialog.findViewById(R.id.usernameInput);
-                            EditText passwordInput = (EditText) signUpDialog.findViewById(R.id.passwordInput);
-                            String username = usernameInput.getText().toString();
-                            String password = passwordInput.getText().toString();
-                            if (backEnd.signIn(username, password)) {
-                                startActivity(DASH_INTENT);
-                            }
-                            else
-                                 ;
+    }
 
+    public void createAccount(String email, String password) {
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(LOG_AUTH_TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.d(LOG_AUTH_TAG, "createUserWithEmail:onComplete:" + task.getException());
+                            Toast.makeText(MainActivity.this, R.string.auth_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(MainActivity.this, "Sign up successful", Toast.LENGTH_SHORT).show();
                         }
                     }
-            );
-            signUpDialog.show();
-        }
+                });
     }
 
-    class MockBackEnd implements BackEnd {
+    public void signIn(String email, String password) {
+        Log.d(LOG_AUTH_TAG, "signInWithEmail:email:" + email);
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(LOG_AUTH_TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-        @Override
-        public boolean signUp(String username, String password) {
-            return false;
-        }
-
-        @Override
-        public boolean signIn(String username, String password) {
-            return username.equals("A") && password.equals("a");
-        }
-
-        @Override
-        public void saveMatch(Match match) {
-
-        }
-
-        @Override
-        public void saveUser(User user) {
-
-        }
-
-        @Override
-        public User getUserByUsername(String username) {
-            return null;
-        }
-
-        @Override
-        public void getMatchesByUser(User user) {
-
-        }
-
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(LOG_AUTH_TAG, "signInWithEmail:failed", task.getException());
+                            Toast.makeText(MainActivity.this, R.string.auth_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            Toast.makeText(MainActivity.this, uid + "Signed in", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
+
+    public void OnSignupButtonClick(View v) {
+        String email = ((EditText)findViewById(R.id.textEmail)).getText().toString().trim();
+        String password = ((EditText)findViewById(R.id.textPassword)).getText().toString().trim();
+        createAccount(email,password);
+    }
+
+    public void OnSigninButtonClick(View v) {
+        String email = ((EditText)findViewById(R.id.textEmail)).getText().toString().trim();
+        String password = ((EditText)findViewById(R.id.textPassword)).getText().toString().trim();
+        signIn(email,password);
+    }
+
 }
 

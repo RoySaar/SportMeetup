@@ -1,5 +1,6 @@
 package com.saar.roy.sportmeetup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,8 +8,14 @@ import java.util.List;
  */
 public class User {
     private String password;
-    private String username;
-    private List<User> friends;
+    private final String username;
+    private final List<User> friends;
+
+    public User(String password, String username) {
+        this.password = password;
+        this.username = username;
+        friends = new ArrayList<>();
+    }
 
 
     public void setPassword(String password) {
