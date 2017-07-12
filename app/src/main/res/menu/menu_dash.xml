@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<item
+    android:title="User Settings"
+    android:id="@+id/accountButton"
+    android:icon="@drawable/ic_account_circle_white_48dp"
+    app:showAsAction="ifRoom"
+    />
+
+<item
+    android:id="@+id/signOutButton"
+    android:title="Sign Out"
+    app:showAsAction="never"
+        />
+</menu>
