@@ -1,10 +1,12 @@
 package com.saar.roy.sportmeetup;
 
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,7 @@ public class SigninFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     public static final String LOG_AUTH_TAG = "FirebaseAuth";
+
 
     public SigninFragment() {
         // Required empty public constructor
@@ -108,6 +111,11 @@ public class SigninFragment extends Fragment {
                         else {
                             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
                             Toast.makeText(getActivity(), uid + "Signed in", Toast.LENGTH_SHORT).show();
+                            FragmentManager fragmentManager = getActivity().getFragmentManager();
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.fragment,new DashboardFragment());
+                            fragmentTransaction.commit();
+
                         }
                     }
                 });
@@ -116,7 +124,7 @@ public class SigninFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.signin_fragment, container);
+        View view = inflater.inflate(R.layout.signin_fragment, container, false);
         view.findViewById(R.id.signInButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

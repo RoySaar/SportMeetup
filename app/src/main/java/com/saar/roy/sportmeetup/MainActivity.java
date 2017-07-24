@@ -2,6 +2,7 @@ package com.saar.roy.sportmeetup;
 
 import android.app.Dialog;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment, new SigninFragment())
+                .commit();
     }
 
 
