@@ -7,31 +7,29 @@ import java.util.List;
  * Created by Roy-PC on 08-Jul-17.
  */
 public class User {
-    private String password;
-    private final String username;
-    private final List<User> friends;
+    private String uid;
+    private final List<String> friendUIDs;
+    private String displayName;
 
-    public User(String password, String username) {
-        this.password = password;
-        this.username = username;
-        friends = new ArrayList<>();
+    public User() {
+        this(null);
     }
 
-
-    public void setPassword(String password) {
-        this.password = password;
+    public User(String uid) {
+        this.uid = uid;
+        displayName = null;
+        friendUIDs = new ArrayList<>();
     }
 
-    public String getPassword() {
-        return password;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUid() {
+        return uid;
     }
 
-    public List<User> getFriends() {
-        return friends;
+    public List<String> getFriendUIDs() {
+        return friendUIDs;
     }
-
 }
